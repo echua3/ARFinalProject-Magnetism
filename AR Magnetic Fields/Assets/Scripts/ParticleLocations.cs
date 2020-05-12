@@ -62,6 +62,7 @@ public class ParticleLocations : MonoBehaviour
        
             yield return null;
         }
+        Debug.LogError("All Positions in cycle: " + positions[1].ToString());
         drawLine(positions);
             //Debug.LogError("All Positions" + positions.ToString());
         }
@@ -87,23 +88,25 @@ public class ParticleLocations : MonoBehaviour
     private void drawLine(Vector3[] positions)
     {
         //create new gameobject instance
+        Debug.LogError("All Positions in drawline: " + positions[1].ToString());
         GameObject myLine = new GameObject();
-        myLine.transform.position = positions[0];
+        // myLine.transform.position = positions[0];
 
         // create line renderer
         myLine.AddComponent<LineRenderer>();
         LineRenderer lr = myLine.GetComponent<LineRenderer>();
 
         //instantiate line renderer
-        lr.positionCount = positions.Length;
+        lr.material = new Material(Shader.Find("Legacy Shaders/Particles/Additive (Soft)"));
         lr.useWorldSpace = false;
-        lr.shadowCastingMode = false;
-        lr.material = new Material(Shader.Find("LegacyShaders/Particles/Additive(Soft)"));
+        lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        
         //lr.SetColors(color, color);
         lr.SetWidth(0.1f, 0.1f);
         //lr.SetPosition(0, start);
         //lr.SetPosition(1, end);
 
+        lr.positionCount = positions.Length;
         //set Positions
         lr.SetPositions(positions);
 
