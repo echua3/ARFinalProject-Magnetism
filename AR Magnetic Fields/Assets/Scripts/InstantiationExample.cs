@@ -8,6 +8,6 @@ public class InstantiationExample : MonoBehaviour
     void Start()
     {
         // Instantiate at position (0, 0, 0) and zero rotation.
-        Instantiate(myPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        Instantiate(myPrefab, new Vector3(0, 1, 1), Quaternion.identity);
     }
 }

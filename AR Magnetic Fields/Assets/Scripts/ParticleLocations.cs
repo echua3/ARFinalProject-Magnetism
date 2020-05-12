@@ -27,12 +27,23 @@ public class ParticleLocations : MonoBehaviour
         // Start the coroutine for each particle path
         foreach (MovingParticle mp in movingParticles)
         {
-
+            Rigidbody rb = GetComponent<Rigidbody>();
             //Debug.Log(mp.transform.position.ToString());
-            if (mp.rb == null)
+            /*if (mp.rb == null)
                 Debug.LogError("SomeVariable has not been assigned.", this);
             Debug.LogError(mp.transform.position.ToString());
-            Debug.LogError(mp.rb.mass.ToString());
+            if (!mp.GetComponent<Rigidbody>())
+            {
+                mp.AddComponent<Rigidbody>();
+                Debug.LogError("No Rigid body?");
+            }
+            if (!currentPrefab.GetComponent<Rigidbody>())
+            {
+                // Add the Rigidbody component
+                currentPrefab.AddComponent<Rigidbody>();
+            }
+                Debug.LogError(mp.charge.ToString());
+            Debug.LogError(mp.rb.mass.ToString());*/
             StartCoroutine(Cycle(mp));
         }
             
@@ -53,11 +64,16 @@ public class ParticleLocations : MonoBehaviour
     private static Vector3 getOriginPosition(MovingParticle mp, PermanentMagnet pm)
     {
         Vector3 aToB = mp.transform.position - pm.transform.position;
+        Debug.LogError("PM World Position" + pm.transform.position.ToString());
+        Debug.LogError("MP World Position" + mp.transform.position.ToString());
+
+        Debug.LogError("aToB" + aToB.ToString());
 
         //local space
-        Vector3 relativePosition = pm.transform.InverseTransformPoint(aToB);
+        Vector3 relativePosition = aToB;
+        //Debug.LogError("Relative Position" + relativePosition.ToString());
 
-        
+
         return relativePosition;
     }
 
@@ -69,6 +85,7 @@ public class ParticleLocations : MonoBehaviour
         foreach (PermanentMagnet pm in permanentMagnets)
         {
             Vector3 position = getOriginPosition(mp, pm);
+            Debug.LogError("Current position " + position.ToString());
             // calculate magnetic force
             float x = position.x;
             float y = position.y;
@@ -84,10 +101,17 @@ public class ParticleLocations : MonoBehaviour
                 newForce = Vector3.zero;
             }*/
         }
+        Debug.LogError("New Force vector: " + newForce.ToString());
+        //mp.rb.AddForce(newForce);
+        //return newForce;
 
-        mp.rb.AddForce(newForce);
-        //eturn newForce;
+        Vector3 newLocation = getNewLocation(newForce, mp);
+        Debug.LogError("New location " + newLocation.ToString());
     }
 
-    //private Vector3 getNewLocation()
+    private Vector3 getNewLocation(Vector3 force, MovingParticle mp)
+    {
+        Vector3 newLocation = force + mp.transform.position;
+        return newLocation;
+    }
 }

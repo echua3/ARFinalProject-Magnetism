@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChargedParticle : MonoBehaviour
+public class ChargedPart : MonoBehaviour
 {
     public float charge = 1;
 
