@@ -10,11 +10,10 @@ public class ParticleLocations : MonoBehaviour
     private List<MovingParticle> movingParticles;
     private List<PermanentMagnet> permanentMagnets;
     private int numParticlesPerPath;
+    public Color c1 = Color.yellow;
+    public Color c2 = Color.red;
 
-    void OnDrawGizmos()
-    {
-        Handles.Label(transform.position, transform.position.ToString());
-    }
+  
 
     // Start is called before the first frame update
     void Start()
@@ -58,11 +57,14 @@ public class ParticleLocations : MonoBehaviour
         for (int i = 0; i < numParticlesPerPath; i++)
         {
             positions[i] = getMagneticDipole(mp);
+
+            // update location of particle
             mp.transform.position = positions[i];
        
             yield return null;
         }
-        Debug.LogError("All Positions in cycle: " + positions[1].ToString());
+        Debug.LogError("Last Position in cycle: " + positions[numParticlesPerPath - 1].ToString());
+        Debug.LogError("First Positions in cycle: " + positions[1].ToString());
         drawLine(positions);
             //Debug.LogError("All Positions" + positions.ToString());
         }
@@ -87,8 +89,9 @@ public class ParticleLocations : MonoBehaviour
     // function to draw the particle path given the positions
     private void drawLine(Vector3[] positions)
     {
+
         //create new gameobject instance
-        Debug.LogError("All Positions in drawline: " + positions[1].ToString());
+        Debug.LogError("First Position in drawline: " + positions[1].ToString());
         GameObject myLine = new GameObject();
         // myLine.transform.position = positions[0];
 
@@ -98,9 +101,18 @@ public class ParticleLocations : MonoBehaviour
 
         //instantiate line renderer
         lr.material = new Material(Shader.Find("Legacy Shaders/Particles/Additive (Soft)"));
-        lr.useWorldSpace = false;
+        lr.useWorldSpace = true;
         lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        
+
+        // 2 color gradient with a fixed alpha of 1.0f.
+        float alpha = 1.0f;
+        Gradient gradient = new Gradient();
+        gradient.SetKeys(
+            new GradientColorKey[] { new GradientColorKey(c1, 0.0f), new GradientColorKey(c2, 1.0f) },
+            new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) }
+        );
+        lr.colorGradient = gradient;
+
         //lr.SetColors(color, color);
         lr.SetWidth(0.1f, 0.1f);
         //lr.SetPosition(0, start);
@@ -109,6 +121,7 @@ public class ParticleLocations : MonoBehaviour
         lr.positionCount = positions.Length;
         //set Positions
         lr.SetPositions(positions);
+        Debug.LogError("Last Position in drawline: " + positions[numParticlesPerPath - 1].ToString());
 
         //GameObject.Destroy(myLine, duration);
     }
