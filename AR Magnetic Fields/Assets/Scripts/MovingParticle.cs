@@ -5,6 +5,7 @@ using UnityEngine;
 public class MovingParticle : ChargedParticle
 {
     public Rigidbody rb;
+    public float mass = 1;
     // Start is called before the first frame update
     void Start()
     {
@@ -12,8 +13,14 @@ public class MovingParticle : ChargedParticle
 
         //do not apply gravity to particle
         rb.useGravity = false;
+        rb.mass = mass;
         
     }
 
-    
+    private void Update()
+    {
+        
+    }
+
+
 }
