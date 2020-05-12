@@ -62,9 +62,9 @@ public class ParticleLocations : MonoBehaviour
        
             yield return null;
         }
-
-        //Debug.LogError("All Positions" + positions.ToString());
-    }
+        drawLine(positions);
+            //Debug.LogError("All Positions" + positions.ToString());
+        }
 
     // get the coordinates of the particle if the permanent magnet was at the origin
     private static Vector3 getOriginPosition(MovingParticle mp, PermanentMagnet pm)
@@ -83,6 +83,32 @@ public class ParticleLocations : MonoBehaviour
         return relativePosition;
     }
 
+    // function to draw the particle path given the positions
+    private void drawLine(Vector3[] positions)
+    {
+        //create new gameobject instance
+        GameObject myLine = new GameObject();
+        myLine.transform.position = positions[0];
+
+        // create line renderer
+        myLine.AddComponent<LineRenderer>();
+        LineRenderer lr = myLine.GetComponent<LineRenderer>();
+
+        //instantiate line renderer
+        lr.positionCount = positions.Length;
+        lr.useWorldSpace = false;
+        lr.shadowCastingMode = false;
+        lr.material = new Material(Shader.Find("LegacyShaders/Particles/Additive(Soft)"));
+        //lr.SetColors(color, color);
+        lr.SetWidth(0.1f, 0.1f);
+        //lr.SetPosition(0, start);
+        //lr.SetPosition(1, end);
+
+        //set Positions
+        lr.SetPositions(positions);
+
+        //GameObject.Destroy(myLine, duration);
+    }
     //
     private Vector3 getMagneticDipole(MovingParticle mp)
     {
