@@ -1,18 +1,43 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class ChildObjectActivator : MonoBehaviour
+﻿using UnityEngine;
+using Vuforia;
+//Attach to the image tracker
+public class ChildObjectActivator : MonoBehaviour, ITrackableEventHandler
 {
-    // Start is called before the first frame update
+    private TrackableBehaviour trackableBehaviour;
+
     void Start()
     {
-        
+        trackableBehaviour = GetComponent<TrackableBehaviour>();
+        if (trackableBehaviour)
+            trackableBehaviour.RegisterTrackableEventHandler(this);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnTrackableStateChanged(TrackableBehaviour.Status previousStatus,
+        TrackableBehaviour.Status newStatus)
     {
-        
+        if (newStatus == TrackableBehaviour.Status.DETECTED ||
+        newStatus == TrackableBehaviour.Status.TRACKED ||
+        newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED)
+            OnTrackingFound();
+        //else
+            //onTrackingLost();
+    }
+    private void OnTrackingFound()
+    {
+        Debug.Log("childcount: " + transform.childCount.ToString());
+        if (transform.childCount > 0)
+        {
+            SetChildrenActive(true);
+        }     
+    }
+    /*private void onTrackingLost()
+    {
+        if (transform.childCount > 0)
+            SetChildrenActive(false);
+    }*/
+    private void SetChildrenActive(bool activeState)
+    {
+        for (int i = 0; i <= transform.childCount; i++)
+            transform.GetChild(i++).gameObject.SetActive(activeState);
     }
 }

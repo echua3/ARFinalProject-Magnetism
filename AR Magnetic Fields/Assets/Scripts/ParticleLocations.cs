@@ -10,16 +10,17 @@ public class ParticleLocations : MonoBehaviour
     private List<MovingParticle> movingParticles;
     private List<PermanentMagnet> permanentMagnets;
     private int numParticlesPerPath;
+    public GameObject prefabLine;
+    public Vector3[][] allPositions;
     public Color c1 = Color.yellow;
     public Color c2 = Color.red;
 
-  
+
 
     // Start is called before the first frame update
     void Start()
     {
-        //GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        //sphere.transform.position = new Vector3(0, 1.5f, 0);
+     
 
         movingParticles = new List<MovingParticle>(FindObjectsOfType<MovingParticle>());
         permanentMagnets = new List<PermanentMagnet>(FindObjectsOfType<PermanentMagnet>());
@@ -65,9 +66,13 @@ public class ParticleLocations : MonoBehaviour
         }
         Debug.LogError("Last Position in cycle: " + positions[numParticlesPerPath - 1].ToString());
         Debug.LogError("First Positions in cycle: " + positions[1].ToString());
+        //Instantiate(prefabLine);
+        //gameObject.AddComponent<FieldLines>().positions = positions;
+        
+
         drawLine(positions);
-            //Debug.LogError("All Positions" + positions.ToString());
-        }
+        //Debug.LogError("All Positions" + positions.ToString());
+    }
 
     // get the coordinates of the particle if the permanent magnet was at the origin
     private static Vector3 getOriginPosition(MovingParticle mp, PermanentMagnet pm)
@@ -101,7 +106,8 @@ public class ParticleLocations : MonoBehaviour
 
         //instantiate line renderer
         lr.material = new Material(Shader.Find("Legacy Shaders/Particles/Additive (Soft)"));
-        lr.useWorldSpace = true;
+        //lr.material.SetTexture("Default-Particle", );
+        lr.useWorldSpace = false;
         lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
 
         // 2 color gradient with a fixed alpha of 1.0f.
@@ -114,18 +120,23 @@ public class ParticleLocations : MonoBehaviour
         lr.colorGradient = gradient;
 
         //lr.SetColors(color, color);
-        lr.SetWidth(0.1f, 0.1f);
+        lr.SetWidth(.06f, .06f);
+        lr.numCornerVertices = 0;
+        
         //lr.SetPosition(0, start);
         //lr.SetPosition(1, end);
 
         lr.positionCount = positions.Length;
         //set Positions
         lr.SetPositions(positions);
+        lr.transform.localScale = new Vector3(2f,2f,2f);
         Debug.LogError("Last Position in drawline: " + positions[numParticlesPerPath - 1].ToString());
+        Instantiate(lr, transform.parent);
 
-        //GameObject.Destroy(myLine, duration);
+        GameObject.Destroy(myLine);
     }
-    //
+
+    //get the force vetor
     private Vector3 getMagneticDipole(MovingParticle mp)
     {
         Vector3 newForce = Vector3.zero;
