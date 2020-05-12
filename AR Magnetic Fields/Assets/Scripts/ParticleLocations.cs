@@ -72,6 +72,7 @@ public class ParticleLocations : MonoBehaviour
 
         drawLine(positions);
         //Debug.LogError("All Positions" + positions.ToString());
+        Destroy(mp);
     }
 
     // get the coordinates of the particle if the permanent magnet was at the origin
@@ -129,7 +130,7 @@ public class ParticleLocations : MonoBehaviour
         lr.positionCount = positions.Length;
         //set Positions
         lr.SetPositions(positions);
-        lr.transform.localScale = new Vector3(2f,2f,2f);
+        lr.transform.localScale = new Vector3(2.5f,2.5f,2.5f);
         Debug.LogError("Last Position in drawline: " + positions[numParticlesPerPath - 1].ToString());
         Instantiate(lr, transform.parent);
 
