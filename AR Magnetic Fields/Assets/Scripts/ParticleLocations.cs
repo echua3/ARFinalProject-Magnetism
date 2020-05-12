@@ -6,9 +6,10 @@ using UnityEditor;
 
 public class ParticleLocations : MonoBehaviour
 {
-    private float cycleInterval = 0.01f;
+    //private float cycleInterval = 0.01f;
     private List<MovingParticle> movingParticles;
     private List<PermanentMagnet> permanentMagnets;
+    private int numParticlesPerPath;
 
     void OnDrawGizmos()
     {
@@ -23,6 +24,7 @@ public class ParticleLocations : MonoBehaviour
 
         movingParticles = new List<MovingParticle>(FindObjectsOfType<MovingParticle>());
         permanentMagnets = new List<PermanentMagnet>(FindObjectsOfType<PermanentMagnet>());
+        numParticlesPerPath = 200;
 
         // Start the coroutine for each particle path
         foreach (MovingParticle mp in movingParticles)
@@ -52,12 +54,16 @@ public class ParticleLocations : MonoBehaviour
     public IEnumerator Cycle (MovingParticle mp)
     {
         //Vector3[] positions = new[] { new Vector3(0f, 0f, 0f), new Vector3(1f, 1f, 1f) };
-        while (true)
+        Vector3[] positions = new Vector3[numParticlesPerPath];
+        for (int i = 0; i < numParticlesPerPath; i++)
         {
-            //positions = getMagneticDipole(mp);
-            getMagneticDipole(mp);
-            yield return new WaitForSeconds(cycleInterval);
+            positions[i] = getMagneticDipole(mp);
+            mp.transform.position = positions[i];
+       
+            yield return null;
         }
+
+        //Debug.LogError("All Positions" + positions.ToString());
     }
 
     // get the coordinates of the particle if the permanent magnet was at the origin
@@ -78,7 +84,7 @@ public class ParticleLocations : MonoBehaviour
     }
 
     //
-    private void getMagneticDipole(MovingParticle mp)
+    private Vector3 getMagneticDipole(MovingParticle mp)
     {
         Vector3 newForce = Vector3.zero;
 
@@ -107,6 +113,7 @@ public class ParticleLocations : MonoBehaviour
 
         Vector3 newLocation = getNewLocation(newForce, mp);
         Debug.LogError("New location " + newLocation.ToString());
+        return newLocation;
     }
 
     private Vector3 getNewLocation(Vector3 force, MovingParticle mp)
